@@ -29,6 +29,8 @@
   function updateTheme() {
     const dark = root.dataset.theme === 'dark';
     themeButton.setAttribute('aria-label', `Switch to ${dark ? 'light' : 'dark'} theme`);
+    themeButton.title = `Turn valve for ${dark ? 'light' : 'dark'} mode`;
+    themeButton.querySelector('.valve-label').textContent = dark ? 'lights off' : 'lights on';
     document.querySelector('meta[name="theme-color"]').content = dark ? '#1b211e' : '#f8f7f3';
     palette = dark
       ? { outer: '#3a4738', inner: '#263025', highlight: '#46533f', packet: '#81996b', text: '#728169', bg: '#1b211e' }
@@ -106,11 +108,14 @@
     const h = canvas.height;
     const gutter = Math.floor((window.innerWidth - 672) / 6);
 
+    themeButton.classList.toggle('on-pipeline', gutter >= 45);
     if (gutter >= 45) {
       const left = gutter - 21;
       const right = w - gutter + 21;
       const upper = Math.round(h * .31);
       const lower = Math.round(h * .67);
+      themeButton.style.setProperty("--valve-x", `${(right + 24) * window.innerWidth / w}px`);
+      themeButton.style.setProperty("--valve-y", `${(upper + 10) * window.innerHeight / h}px`);
       paths = [
         makePath([[-8, upper - 38], [left - 22, upper - 38], [left - 22, upper], [left, upper], [left, lower], [left - 25, lower], [left - 25, h + 8]]),
         makePath([[w + 8, upper - 5], [right + 24, upper - 5], [right + 24, upper + 28], [right, upper + 28], [right, lower + 20], [right + 27, lower + 20], [right + 27, h + 8]]),
@@ -123,7 +128,6 @@
         { kind: 'label', x: left - 31, y: upper - 62, text: 'ingest' },
         { kind: 'coupling', x: left - 25, y: lower + 24, vertical: true },
         { kind: 'coupling', x: right + 12, y: upper + 28, vertical: false },
-        { kind: 'valve', x: right + 24, y: upper + 10 },
         { kind: 'label', x: right + 2, y: upper - 16, text: 'transform' },
         { kind: 'coupling', x: right, y: lower - 24, vertical: true },
         { kind: 'warehouse', x: right, y: lower + 1 },

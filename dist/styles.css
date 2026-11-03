@@ -160,3 +160,18 @@ details[open] .details-sign { transform: rotate(45deg); }
   html { scroll-behavior: auto; }
   .mini-pipe i { animation: none; left: 40%; }
 }
+
+/* The theme control is a real button mounted on the decorative pipe. */
+.page { padding-top: 28px; }
+.theme-valve { position: absolute; top: 22px !important; right: 22px; left: auto !important; z-index: 2; width: 64px; height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 0; border: 0; background: none; color: var(--accent); }
+.theme-valve::before { content: ''; position: absolute; top: 22px; left: -12px; right: -12px; height: 8px; border-block: 2px solid var(--line); background: var(--soft); z-index: -1; }
+.theme-valve.on-pipeline { position: fixed; left: auto; right: auto; transform: translate(-50%, -50%); }
+.theme-valve.on-pipeline { top: var(--valve-y) !important; left: var(--valve-x) !important; }
+.theme-valve.on-pipeline::before { display: none; }
+.valve-wheel { flex-shrink: 0; shape-rendering: crispEdges; transition: transform .25s ease; }
+.valve-label { position: absolute; top: 54px; white-space: nowrap; font: 9px var(--mono); color: var(--muted); }
+.theme-valve:hover .valve-wheel { transform: rotate(15deg); }
+[data-theme="dark"] .valve-wheel { transform: rotate(45deg); }
+[data-theme="dark"] .theme-valve:hover .valve-wheel { transform: rotate(60deg); }
+@media (max-width: 941px) { .page { padding-top: 65px; } }
+@media (prefers-reduced-motion: reduce) { .valve-wheel { transition: none; } }
