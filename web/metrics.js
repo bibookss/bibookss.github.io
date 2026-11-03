@@ -17,9 +17,10 @@
           const meter = document.querySelector(`[data-meter="${key}"]`);
           meter.querySelector('.meter-value').textContent = value.toLocaleString();
           const scale = Math.max(100, 10 ** Math.ceil(Math.log10(value || 1)));
-          meter.querySelector('.meter-needle').style.transform = `rotate(${Math.round(value / scale * 8) * 22.5 - 90}deg)`;
+
           meter.title = `Dial scale: 0–${scale.toLocaleString()}`;
         }
+        document.dispatchEvent(new CustomEvent('metricschange', { detail: counts }));
         document.querySelector('#metrics-scope').textContent = counts.preview ? 'local preview' : 'all visitors';
         note.textContent = counts.preview
           ? 'Preview counters · separate from the live site.'

@@ -126,26 +126,12 @@
 
       </footer>
     </div>
+    <canvas id="instrumentation" aria-hidden="true"></canvas>
     <section class="activity" aria-label="Site activity meters">
-      <div class="meters"><div class="meter" data-meter="visits">
- <svg class="meter-dial" viewBox="0 0 32 34" aria-hidden="true">
-  <path class="meter-stem" d="M14 24h4v10h-4z"/>
-  <path class="meter-case" d="M10 2h12v2h4v4h2v12h-2v4h-4v2H10v-2H6v-4H4V8h2V4h4Z"/>
-  <path class="meter-ticks" d="M8 12h2m1-5v2m5-4v2m5 0v2m1 3h2"/>
-  <path class="meter-needle" d="M16 13v-4" style="transform:rotate(-90deg)"/>
-  <path class="meter-hub" d="M15 12h2v2h-2z"/>
- </svg>
- <span class="meter-value" aria-live="polite" data-count="visits">—</span><span class="meter-label">visits</span>
- </div><div class="meter" data-meter="valves">
- <svg class="meter-dial" viewBox="0 0 32 34" aria-hidden="true">
-  <path class="meter-stem" d="M14 24h4v10h-4z"/>
-  <path class="meter-case" d="M10 2h12v2h4v4h2v12h-2v4h-4v2H10v-2H6v-4H4V8h2V4h4Z"/>
-  <path class="meter-ticks" d="M8 12h2m1-5v2m5-4v2m5 0v2m1 3h2"/>
-  <path class="meter-needle" d="M16 13v-4" style="transform:rotate(-90deg)"/>
-  <path class="meter-hub" d="M15 12h2v2h-2z"/>
- </svg>
- <span class="meter-value" aria-live="polite" data-count="valves">—</span><span class="meter-label">valve turns</span>
- </div></div>
+      <div class="meters">
+        <div class="meter" data-meter="visits"><span class="meter-label">page visits</span><span class="meter-value" aria-live="polite" data-count="visits">—</span></div>
+        <div class="meter" data-meter="valves"><span class="meter-label">valve turns</span><span class="meter-value" aria-live="polite" data-count="valves">—</span></div>
+      </div>
       <span id="metrics-scope">all visitors</span>
       <p id="metrics-note" class="sr-only">Page loads and valve turns, across all visitors.</p>
     </section>

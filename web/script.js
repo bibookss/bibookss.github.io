@@ -14,6 +14,9 @@
   let scenery = [];
   let palette;
   let storedFlow;
+  let siteCounts = { visits: 0, valves: 0 };
+  const station = document.querySelector('#instrumentation');
+  const stationContext = station.getContext('2d');
 
   function readPreference(key) {
     try { return localStorage.getItem(key); } catch { return null; }
@@ -99,6 +102,8 @@
   function resize() {
     // A deliberately low-resolution canvas gives every line a true pixel edge.
     canvas.width = Math.ceil(window.innerWidth / 3);
+    station.width = canvas.width;
+    station.height = 52;
     canvas.height = Math.ceil((window.innerWidth < 942 ? document.body.scrollHeight : window.innerHeight) / 3);
     paths = [];
     scenery = [];
@@ -141,11 +146,9 @@
       // On small screens the plumbing frames the document, away from the copy.
       paths = [
         makePath([[-8, 10], [12, 10], [12, 18], [w - 8, 18], [w - 8, 8], [w + 8, 8]]),
-        makePath([[-8, h - 10], [14, h - 10], [14, h - 22], [w - 20, h - 22], [w - 20, h - 10], [w + 8, h - 10]]),
       ];
       scenery = [
         { kind: 'coupling', x: 25, y: 18, vertical: false },
-        { kind: 'coupling', x: 23, y: h - 22, vertical: false },
         { kind: 'source', x: 12, y: 2 },
       ];
     }
@@ -224,7 +227,86 @@
       }
     });
     scenery.forEach(drawScenery);
+    drawStation();
   }
+
+  function drawStation() {
+    if (!stationContext || !palette) return;
+    const c = stationContext;
+    const metal = root.dataset.theme === 'dark'
+      ? { ...palette, outer: '#627255', inner: '#2b3527', highlight: '#849673', packet: '#a2bc8c' }
+      : palette;
+    const middle = Math.round(station.width / 2);
+    const thickness = window.innerWidth < 942 ? 5 : 7;
+    c.clearRect(0, 0, station.width, station.height);
+    const box = (x, y, w, h, color) => { c.fillStyle = color; c.fillRect(x, y, w, h); };
+    function pipe(points) {
+      for (const [color, width] of [[metal.outer, thickness], [metal.inner, thickness - 2]]) {
+        c.beginPath(); c.moveTo(...points[0]);
+        points.slice(1).forEach(point => c.lineTo(...point));
+        c.lineWidth = width; c.lineJoin = 'miter'; c.strokeStyle = color; c.stroke();
+      }
+    }
+    function flange(x, y, vertical = false) {
+      box(x - (vertical ? 5 : 1), y - (vertical ? 1 : 5), vertical ? 10 : 3, vertical ? 3 : 10, metal.highlight);
+      box(x - (vertical ? 3 : 0), y - (vertical ? 0 : 3), vertical ? 6 : 1, vertical ? 1 : 6, metal.inner);
+    }
+    pipe([[-8, 48], [middle - 48, 48], [middle - 48, 44], [middle + 48, 44], [middle + 48, 48], [station.width + 8, 48]]);
+    flange(middle - 41, 44);
+    flange(middle + 41, 44);
+    for (const [index, key] of ['visits', 'valves'].entries()) {
+      const x = middle + (index ? 19 : -19);
+      pipe([[x, 44], [x, 32]]);
+      flange(x, 38, true);
+      // A stepped cast-metal housing, with a lit top edge and a shaded base.
+      box(x - 13, 9, 26, 25, metal.outer);
+      box(x - 15, 11, 30, 21, metal.outer);
+      box(x - 12, 10, 24, 23, metal.inner);
+      box(x - 14, 12, 28, 19, metal.inner);
+      box(x - 12, 10, 24, 1, metal.highlight);
+      box(x - 13, 32, 26, 2, metal.highlight);
+      for (const dx of [-12, 11]) for (const y of [12, 30]) {
+        box(x + dx, y, 2, 2, metal.highlight);
+        box(x + dx, y, 1, 1, palette.bg);
+      }
+      // Recessed glass and the exact mechanical counter below it.
+      box(x - 10, 13, 20, 12, metal.highlight);
+      box(x - 9, 14, 18, 10, palette.bg);
+      box(x - 10, 26, 20, 6, metal.highlight);
+      box(x - 9, 27, 18, 4, palette.bg);
+      const value = siteCounts[key];
+      const scale = Math.max(100, 10 ** Math.ceil(Math.log10(value || 1)));
+      const level = value / scale;
+      if (index === 0) {
+        // Hand-stepped dial markings and a needle drawn one cell at a time.
+        for (const [dx, y] of [[-7, 21], [-5, 17], [0, 15], [5, 17], [7, 21]]) box(x + dx, y, 1, 2, metal.highlight);
+        const angle = Math.PI + Math.round(level * 8) / 8 * Math.PI;
+        for (let radius = 0; radius <= 6; radius++) box(x + Math.round(Math.cos(angle) * radius), 22 + Math.round(Math.sin(angle) * radius), 1, 1, metal.packet);
+        box(x - 1, 21, 3, 2, metal.highlight);
+      } else {
+        // Segmented sight glass, like a tiny industrial flow monitor.
+        for (let row = 0; row < 3; row++) {
+          box(x - 7, 16 + row * 3, 11, 1, metal.outer);
+          box(x - 7, 16 + row * 3, Math.max(1, Math.round(level * 11)), 1, metal.packet);
+          box(x + 6, 16 + row * 3, 1, 1, metal.highlight);
+        }
+      }
+    }
+    // A little inline strainer, connected to the same supply manifold.
+    box(middle - 4, 39, 8, 10, metal.highlight);
+    box(middle - 3, 40, 6, 8, metal.inner);
+    for (let y = 41; y < 48; y += 2) box(middle - 2, y, 4, 1, metal.outer);
+    // Packets keep the bottom assembly in the same animation as the pipes.
+    for (let index = 0; index < 5; index++) {
+      const x = Math.round((elapsed * .012 + index * station.width / 5) % station.width);
+      if (Math.abs(x - middle) > 50) box(x, 47, 2, 2, metal.packet);
+    }
+  }
+
+  document.addEventListener('metricschange', event => {
+    siteCounts = event.detail;
+    draw();
+  });
 
   function animate(timestamp) {
     animationFrame = null;

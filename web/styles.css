@@ -202,20 +202,14 @@ body { position: relative; }
 }
 @media (max-width: 600px) { .page { width: calc(100% - 40px); } }
 
-/* Small pixel instruments mounted on the bottom plumbing. */
+/* Instruments share the plumbing canvas's three-pixel drawing grid. */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.activity { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 240px; height: 110px; text-align: center; z-index: 1; }
-.activity::before { content: ''; position: absolute; width: 100vw; left: calc(120px - 50vw); top: 60px; height: 9px; border-block: 3px solid var(--line); background: var(--soft); z-index: -1; }
-.meters { display: flex; justify-content: center; gap: 28px; }
-.meter { position: relative; width: 90px; display: flex; flex-direction: column; align-items: center; }
-.meter-dial { width: 64px; height: 68px; overflow: visible; shape-rendering: crispEdges; }
-.meter-case { stroke: var(--accent); stroke-width: 1px; fill: var(--bg); }
-.meter-stem { fill: var(--soft); stroke: var(--accent); stroke-width: 1px; }
-.meter-ticks { stroke: var(--muted); stroke-width: 1px; fill: none; }
-.meter-needle { transform-origin: 16px 13px; stroke: var(--accent); stroke-width: 1px; }
-.meter-hub { fill: var(--accent); }
-.meter-value { position: absolute; top: 34px; max-width: 60px; color: var(--heading); font: 10px var(--mono); font-variant-numeric: tabular-nums; background: var(--bg); padding: 0 2px; }
-.meter-label { font: 9px var(--mono); color: var(--muted); margin-top: 3px; }
-#metrics-scope { display: block; font: 8px var(--mono); color: var(--muted); margin-top: 9px; }
-.site-footer { padding-bottom: 170px; }
-@media (max-width: 941px) { .site-footer { padding-bottom: 170px; } .activity::before { display: none; } }
+#instrumentation { position: absolute; bottom: 0; left: 0; width: 100%; height: 156px; image-rendering: pixelated; pointer-events: none; }
+.activity { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 240px; height: 156px; text-align: center; z-index: 1; }
+.meters { display: flex; justify-content: center; gap: 24px; }
+.meter { position: relative; width: 90px; height: 132px; display: flex; flex-direction: column; align-items: center; }
+.meter-value { position: absolute; top: 81px; color: var(--heading); font: 11px/15px var(--mono); font-variant-numeric: tabular-nums; }
+.meter-label { position: absolute; top: 10px; color: var(--muted); font: 9px var(--mono); white-space: nowrap; }
+#metrics-scope { display: block; font: 8px var(--mono); color: var(--muted); margin-top: 12px; }
+.site-footer { padding-bottom: 185px; }
+@media (max-width: 941px) { .site-footer { padding-bottom: 185px; } }
