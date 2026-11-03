@@ -250,7 +250,13 @@
       box(x - (vertical ? 5 : 1), y - (vertical ? 1 : 5), vertical ? 10 : 3, vertical ? 3 : 10, metal.highlight);
       box(x - (vertical ? 3 : 0), y - (vertical ? 0 : 3), vertical ? 6 : 1, vertical ? 1 : 6, metal.inner);
     }
-    pipe([[-8, 48], [middle - 48, 48], [middle - 48, 44], [middle + 48, 44], [middle + 48, 48], [station.width + 8, 48]]);
+    const supply = makePath([[-8, 48], [middle - 48, 48], [middle - 48, 44], [middle + 48, 44], [middle + 48, 48], [station.width + 8, 48]]);
+    pipe(supply.points);
+    // Use the pipe's exact centerline, including both elbows. Draw below fittings.
+    for (let index = 0; index < 5; index++) {
+      const [x, y] = pointOnPath(supply, elapsed * .012 + index * supply.length / 5);
+      box(x - 1, y - 1, 2, 2, metal.packet);
+    }
     flange(middle - 41, 44);
     flange(middle + 41, 44);
     for (const [index, key] of ['visits', 'valves'].entries()) {
@@ -295,11 +301,7 @@
     box(middle - 4, 39, 8, 10, metal.highlight);
     box(middle - 3, 40, 6, 8, metal.inner);
     for (let y = 41; y < 48; y += 2) box(middle - 2, y, 4, 1, metal.outer);
-    // Packets keep the bottom assembly in the same animation as the pipes.
-    for (let index = 0; index < 5; index++) {
-      const x = Math.round((elapsed * .012 + index * station.width / 5) % station.width);
-      if (Math.abs(x - middle) > 50) box(x, 47, 2, 2, metal.packet);
-    }
+
   }
 
   document.addEventListener('metricschange', event => {
