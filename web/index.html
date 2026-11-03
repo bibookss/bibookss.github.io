@@ -41,6 +41,7 @@
       <svg class="valve-wheel" width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M7 2h10v3h4v14h-4v3H7v-3H3V5h4V2Z" fill="var(--bg)" stroke="currentColor" stroke-width="2"/>
         <path d="M12 3v5m0 8v5M3 12h5m8 0h5" stroke="currentColor" stroke-width="3"/>
+        <rect x="6" y="4" width="3" height="3" fill="currentColor"/>
         <path class="flow-pause" d="M9 9h2v6H9zm4 0h2v6h-2z" fill="currentColor"/>
         <path class="flow-play" d="M9 8l7 4-7 4V8Z" fill="currentColor"/>
       </svg>
@@ -117,27 +118,7 @@
           <p>Have a data problem, a project in mind, or just want to say hi?</p>
           <a class="email-link" href="mailto:albperez.dev@gmail.com">albperez.dev@gmail.com <span aria-hidden="true">↗</span></a>
         </section>
-        <section class="activity content-section" aria-labelledby="activity-title">
-          <div class="section-heading"><h2 id="activity-title">At the pump</h2><span class="section-aside" id="metrics-scope">all visitors</span></div>
-          <div class="meters"><div class="meter" data-meter="visits">
- <svg class="meter-dial" viewBox="0 0 120 76" aria-hidden="true">
-  <path class="meter-arc" d="M12 60a48 48 0 0 1 96 0"/>
-  <g class="meter-ticks"><path d="M18.0 60.0l5.0 -0.0"/><path d="M21.2 43.9l4.6 1.9"/><path d="M30.3 30.3l3.5 3.5"/><path d="M43.9 21.2l1.9 4.6"/><path d="M60.0 18.0l0.0 5.0"/><path d="M76.1 21.2l-1.9 4.6"/><path d="M89.7 30.3l-3.5 3.5"/><path d="M98.8 43.9l-4.6 1.9"/><path d="M102.0 60.0l-5.0 0.0"/></g>
-  <g class="meter-needle" style="transform:rotate(-90deg)"><path d="M60 64V25"/></g>
-  <rect class="meter-hub" x="57" y="57" width="6" height="6"/>
- </svg>
- <span class="meter-value" aria-live="polite" data-count="visits">—</span><span class="meter-label">page visits</span>
- </div><div class="meter" data-meter="valves">
- <svg class="meter-dial" viewBox="0 0 120 76" aria-hidden="true">
-  <path class="meter-arc" d="M12 60a48 48 0 0 1 96 0"/>
-  <g class="meter-ticks"><path d="M18.0 60.0l5.0 -0.0"/><path d="M21.2 43.9l4.6 1.9"/><path d="M30.3 30.3l3.5 3.5"/><path d="M43.9 21.2l1.9 4.6"/><path d="M60.0 18.0l0.0 5.0"/><path d="M76.1 21.2l-1.9 4.6"/><path d="M89.7 30.3l-3.5 3.5"/><path d="M98.8 43.9l-4.6 1.9"/><path d="M102.0 60.0l-5.0 0.0"/></g>
-  <g class="meter-needle" style="transform:rotate(-90deg)"><path d="M60 64V25"/></g>
-  <rect class="meter-hub" x="57" y="57" width="6" height="6"/>
- </svg>
- <span class="meter-value" aria-live="polite" data-count="valves">—</span><span class="meter-label">valve turns</span>
- </div></div>
-          <p class="meter-note" id="metrics-note">Page loads and valve turns, across all visitors.</p>
-        </section>
+
       </main>
 
       <footer class="site-footer">
@@ -145,5 +126,28 @@
 
       </footer>
     </div>
+    <section class="activity" aria-label="Site activity meters">
+      <div class="meters"><div class="meter" data-meter="visits">
+ <svg class="meter-dial" viewBox="0 0 32 34" aria-hidden="true">
+  <path class="meter-stem" d="M14 24h4v10h-4z"/>
+  <path class="meter-case" d="M10 2h12v2h4v4h2v12h-2v4h-4v2H10v-2H6v-4H4V8h2V4h4Z"/>
+  <path class="meter-ticks" d="M8 12h2m1-5v2m5-4v2m5 0v2m1 3h2"/>
+  <path class="meter-needle" d="M16 13v-4" style="transform:rotate(-90deg)"/>
+  <path class="meter-hub" d="M15 12h2v2h-2z"/>
+ </svg>
+ <span class="meter-value" aria-live="polite" data-count="visits">—</span><span class="meter-label">visits</span>
+ </div><div class="meter" data-meter="valves">
+ <svg class="meter-dial" viewBox="0 0 32 34" aria-hidden="true">
+  <path class="meter-stem" d="M14 24h4v10h-4z"/>
+  <path class="meter-case" d="M10 2h12v2h4v4h2v12h-2v4h-4v2H10v-2H6v-4H4V8h2V4h4Z"/>
+  <path class="meter-ticks" d="M8 12h2m1-5v2m5-4v2m5 0v2m1 3h2"/>
+  <path class="meter-needle" d="M16 13v-4" style="transform:rotate(-90deg)"/>
+  <path class="meter-hub" d="M15 12h2v2h-2z"/>
+ </svg>
+ <span class="meter-value" aria-live="polite" data-count="valves">—</span><span class="meter-label">valve turns</span>
+ </div></div>
+      <span id="metrics-scope">all visitors</span>
+      <p id="metrics-note" class="sr-only">Page loads and valve turns, across all visitors.</p>
+    </section>
   </body>
 </html>

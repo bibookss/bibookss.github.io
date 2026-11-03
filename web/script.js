@@ -146,7 +146,6 @@
       scenery = [
         { kind: 'coupling', x: 25, y: 18, vertical: false },
         { kind: 'coupling', x: 23, y: h - 22, vertical: false },
-        { kind: 'warehouse', x: Math.round(w * .55), y: h - 22 },
         { kind: 'source', x: 12, y: 2 },
       ];
     }

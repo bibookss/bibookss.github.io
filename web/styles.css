@@ -180,7 +180,7 @@ details[open] .details-sign { transform: rotate(45deg); }
 .flow-play { display: none; }
 [data-flow="paused"] .flow-pause { display: none; }
 [data-flow="paused"] .flow-play { display: block; }
-[data-flow="paused"] .flow-valve .valve-wheel { transform: rotate(90deg); }
+[data-flow="paused"] .flow-valve .valve-wheel { transform: rotate(45deg); }
 
 
 html[data-theme="light"] #pipeline { opacity: .8; }
@@ -193,7 +193,7 @@ html[data-theme="light"] #pipeline { opacity: .8; }
 }
 @media (max-width: 600px) { .page { width: calc(100% - 64px); } }
 
-[data-flow="paused"] .flow-play { transform: rotate(-90deg); transform-origin: 12px 12px; }
+[data-flow="paused"] .flow-play { transform: rotate(-45deg); transform-origin: 12px 12px; }
 
 body { position: relative; }
 @media (max-width: 941px) {
@@ -202,15 +202,20 @@ body { position: relative; }
 }
 @media (max-width: 600px) { .page { width: calc(100% - 40px); } }
 
-.meters { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 360px; margin: 0 auto; }
-.meter { display: flex; flex-direction: column; align-items: center; }
-.meter-dial { width: 120px; height: 76px; overflow: visible; shape-rendering: crispEdges; }
-.meter-arc { stroke: var(--line); stroke-width: 4px; fill: none; }
-.meter-ticks { stroke: var(--muted); stroke-width: 2px; fill: none; }
-.meter-needle { transform-origin: 60px 60px; transition: transform .45s ease; }
-.meter-needle path { stroke: var(--accent); stroke-width: 3px; }
+/* Small pixel instruments mounted on the bottom plumbing. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.activity { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 240px; height: 110px; text-align: center; z-index: 1; }
+.activity::before { content: ''; position: absolute; width: 100vw; left: calc(120px - 50vw); top: 60px; height: 9px; border-block: 3px solid var(--line); background: var(--soft); z-index: -1; }
+.meters { display: flex; justify-content: center; gap: 28px; }
+.meter { position: relative; width: 90px; display: flex; flex-direction: column; align-items: center; }
+.meter-dial { width: 64px; height: 68px; overflow: visible; shape-rendering: crispEdges; }
+.meter-case { stroke: var(--accent); stroke-width: 1px; fill: var(--bg); }
+.meter-stem { fill: var(--soft); stroke: var(--accent); stroke-width: 1px; }
+.meter-ticks { stroke: var(--muted); stroke-width: 1px; fill: none; }
+.meter-needle { transform-origin: 16px 13px; stroke: var(--accent); stroke-width: 1px; }
 .meter-hub { fill: var(--accent); }
-.meter-value { font: 22px var(--mono); color: var(--heading); font-variant-numeric: tabular-nums; margin-top: 4px; }
-.meter-label { font: 11px var(--mono); color: var(--muted); margin-top: 8px; }
-.meter-note { color: var(--muted); text-align: center; font: 10px/1.8 var(--mono); margin-top: 22px; }
-@media (prefers-reduced-motion: reduce) { .meter-needle { transition: none; } }
+.meter-value { position: absolute; top: 34px; max-width: 60px; color: var(--heading); font: 10px var(--mono); font-variant-numeric: tabular-nums; background: var(--bg); padding: 0 2px; }
+.meter-label { font: 9px var(--mono); color: var(--muted); margin-top: 3px; }
+#metrics-scope { display: block; font: 8px var(--mono); color: var(--muted); margin-top: 9px; }
+.site-footer { padding-bottom: 170px; }
+@media (max-width: 941px) { .site-footer { padding-bottom: 170px; } .activity::before { display: none; } }
