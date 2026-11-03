@@ -233,16 +233,6 @@
     previousTime = null;
   });
 
-  // These links stay native anchors, including when JavaScript is unavailable.
-  function updateNavigation() {
-    const section = location.hash || '#home';
-    document.querySelectorAll('.nav-link').forEach(link => {
-      if (link.getAttribute('href') === section) link.setAttribute('aria-current', 'location');
-      else link.removeAttribute('aria-current');
-    });
-  }
-  window.addEventListener('hashchange', updateNavigation);
-  updateNavigation();
   resize();
   updateFlow();
 })();
