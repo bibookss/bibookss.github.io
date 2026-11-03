@@ -34,7 +34,7 @@
     document.querySelector('meta[name="theme-color"]').content = dark ? '#1b211e' : '#f8f7f3';
     palette = dark
       ? { outer: '#3a4738', inner: '#263025', highlight: '#46533f', packet: '#81996b', text: '#728169', bg: '#1b211e' }
-      : { outer: '#d8dfce', inner: '#edf0e5', highlight: '#c5d1b9', packet: '#93a77b', text: '#9ba58e', bg: '#f8f7f3' };
+      : { outer: '#acb99f', inner: '#e5eadc', highlight: '#95a987', packet: '#5c7c49', text: '#718665', bg: '#f8f7f3' };
     draw();
   }
 
@@ -57,7 +57,7 @@
     flowButton.setAttribute('aria-pressed', String(playing));
     flowButton.setAttribute('aria-label', playing ? 'Pause pipeline animation' : 'Play pipeline animation');
     flowLabel.textContent = playing ? 'pipes flowing' : 'pipes paused';
-    flowButton.querySelector('.flow-control').textContent = playing ? 'Ⅱ' : '▷';
+    flowButton.title = playing ? 'Turn valve to pause pipes' : 'Turn valve to play pipes';
     syncAnimation();
   }
 
@@ -109,6 +109,7 @@
     const gutter = Math.floor((window.innerWidth - 672) / 6);
 
     themeButton.classList.toggle('on-pipeline', gutter >= 45);
+    flowButton.classList.toggle('on-pipeline', gutter >= 45);
     if (gutter >= 45) {
       const left = gutter - 21;
       const right = w - gutter + 21;
@@ -116,6 +117,8 @@
       const lower = Math.round(h * .67);
       themeButton.style.setProperty("--valve-x", `${(right + 24) * window.innerWidth / w}px`);
       themeButton.style.setProperty("--valve-y", `${(upper + 10) * window.innerHeight / h}px`);
+      flowButton.style.setProperty("--valve-x", `${right * window.innerWidth / w}px`);
+      flowButton.style.setProperty("--valve-y", `${(upper + 60) * window.innerHeight / h}px`);
       paths = [
         makePath([[-8, upper - 38], [left - 22, upper - 38], [left - 22, upper], [left, upper], [left, lower], [left - 25, lower], [left - 25, h + 8]]),
         makePath([[w + 8, upper - 5], [right + 24, upper - 5], [right + 24, upper + 28], [right, upper + 28], [right, lower + 20], [right + 27, lower + 20], [right + 27, h + 8]]),
