@@ -99,7 +99,7 @@
   function resize() {
     // A deliberately low-resolution canvas gives every line a true pixel edge.
     canvas.width = Math.ceil(window.innerWidth / 3);
-    canvas.height = Math.ceil(window.innerHeight / 3);
+    canvas.height = Math.ceil((window.innerWidth < 942 ? document.body.scrollHeight : window.innerHeight) / 3);
     paths = [];
     scenery = [];
     if (!context) return;
@@ -138,18 +138,16 @@
         { kind: 'coupling', x: right + 27, y: lower + 43, vertical: true },
       ];
     } else {
-      const upper = Math.round(h * .35);
-      const lower = Math.round(h * .7);
+      // On small screens the plumbing frames the document, away from the copy.
       paths = [
-        makePath([[-8, 18], [w + 8, 18]]),
-        makePath([[4, 18], [4, upper], [6, upper], [6, lower], [4, lower], [4, h + 8]]),
-        makePath([[w - 4, 18], [w - 4, upper + 25], [w - 6, upper + 25], [w - 6, lower + 20], [w - 4, lower + 20], [w - 4, h + 8]]),
+        makePath([[-8, 10], [12, 10], [12, 18], [w - 8, 18], [w - 8, 8], [w + 8, 8]]),
+        makePath([[-8, h - 10], [14, h - 10], [14, h - 22], [w - 20, h - 22], [w - 20, h - 10], [w + 8, h - 10]]),
       ];
       scenery = [
-        { kind: 'coupling', x: 4, y: upper - 14, vertical: true },
-        { kind: 'coupling', x: 4, y: lower + 18, vertical: true },
-        { kind: 'coupling', x: w - 4, y: upper + 10, vertical: true },
-        { kind: 'coupling', x: w - 4, y: lower + 36, vertical: true },
+        { kind: 'coupling', x: 25, y: 18, vertical: false },
+        { kind: 'coupling', x: 23, y: h - 22, vertical: false },
+        { kind: 'warehouse', x: Math.round(w * .55), y: h - 22 },
+        { kind: 'source', x: 12, y: 2 },
       ];
     }
     updateTheme();
@@ -247,6 +245,7 @@
 
   document.addEventListener('visibilitychange', syncAnimation);
   window.addEventListener('resize', resize);
+  new ResizeObserver(resize).observe(document.querySelector('.page'));
   window.addEventListener('pageshow', syncAnimation);
   window.addEventListener('pagehide', () => {
     if (animationFrame !== null) cancelAnimationFrame(animationFrame);

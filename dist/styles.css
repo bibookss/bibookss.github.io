@@ -194,3 +194,10 @@ html[data-theme="light"] #pipeline { opacity: .8; }
 @media (max-width: 600px) { .page { width: calc(100% - 64px); } }
 
 [data-flow="paused"] .flow-play { transform: rotate(-90deg); transform-origin: 12px 12px; }
+
+body { position: relative; }
+@media (max-width: 941px) {
+  #pipeline { position: absolute; height: 100%; }
+  .site-footer { padding-bottom: 125px; }
+}
+@media (max-width: 600px) { .page { width: calc(100% - 40px); } }
