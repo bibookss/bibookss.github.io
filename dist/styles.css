@@ -170,9 +170,9 @@ details[open] .details-sign { transform: rotate(45deg); }
 .pipe-valve.on-pipeline::before { display: none; }
 .valve-wheel { flex-shrink: 0; shape-rendering: crispEdges; transition: transform .25s ease; }
 .valve-label { position: absolute; top: 54px; white-space: nowrap; font: 9px var(--mono); color: var(--muted); }
-.pipe-valve:hover .valve-wheel { transform: rotate(15deg); }
+.pipe-valve:hover { color: var(--accent-hover); }
 [data-theme="dark"] .theme-valve .valve-wheel { transform: rotate(45deg); }
-[data-theme="dark"] .pipe-valve:hover .valve-wheel { transform: rotate(60deg); }
+
 @media (max-width: 941px) { .page { padding-top: 65px; } }
 @media (prefers-reduced-motion: reduce) { .valve-wheel { transition: none; } }
 
@@ -181,7 +181,16 @@ details[open] .details-sign { transform: rotate(45deg); }
 [data-flow="paused"] .flow-pause { display: none; }
 [data-flow="paused"] .flow-play { display: block; }
 [data-flow="paused"] .flow-valve .valve-wheel { transform: rotate(90deg); }
-[data-flow="paused"] .flow-valve:hover .valve-wheel { transform: rotate(105deg); }
+
 
 html[data-theme="light"] #pipeline { opacity: .8; }
 @media (max-width: 800px) { html[data-theme="light"] #pipeline { opacity: .6; } }
+
+@media (max-width: 941px) {
+  .pipe-valve::before { display: none; }
+  #pipeline { opacity: .65; }
+  html[data-theme="light"] #pipeline { opacity: .85; }
+}
+@media (max-width: 600px) { .page { width: calc(100% - 64px); } }
+
+[data-flow="paused"] .flow-play { transform: rotate(-90deg); transform-origin: 12px 12px; }

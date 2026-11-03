@@ -137,6 +137,20 @@
         { kind: 'label', x: right + 10, y: lower + 3, text: 'serve' },
         { kind: 'coupling', x: right + 27, y: lower + 43, vertical: true },
       ];
+    } else {
+      const upper = Math.round(h * .35);
+      const lower = Math.round(h * .7);
+      paths = [
+        makePath([[-8, 18], [w + 8, 18]]),
+        makePath([[4, 18], [4, upper], [6, upper], [6, lower], [4, lower], [4, h + 8]]),
+        makePath([[w - 4, 18], [w - 4, upper + 25], [w - 6, upper + 25], [w - 6, lower + 20], [w - 4, lower + 20], [w - 4, h + 8]]),
+      ];
+      scenery = [
+        { kind: 'coupling', x: 4, y: upper - 14, vertical: true },
+        { kind: 'coupling', x: 4, y: lower + 18, vertical: true },
+        { kind: 'coupling', x: w - 4, y: upper + 10, vertical: true },
+        { kind: 'coupling', x: w - 4, y: lower + 36, vertical: true },
+      ];
     }
     updateTheme();
     syncAnimation();
@@ -202,8 +216,8 @@
     if (!context || !palette) return;
     context.clearRect(0, 0, canvas.width, canvas.height);
     paths.forEach((path, index) => {
-      strokePath(path, palette.outer, 7);
-      strokePath(path, palette.inner, 5);
+      strokePath(path, palette.outer, window.innerWidth < 942 ? 5 : 7);
+      strokePath(path, palette.inner, window.innerWidth < 942 ? 3 : 5);
       const count = Math.max(2, Math.floor(path.length / 65));
       for (let packet = 0; packet < count; packet++) {
         const distance = elapsed * .012 + packet * path.length / count + index * 30;
