@@ -33,7 +33,6 @@
     const dark = root.dataset.theme === 'dark';
     themeButton.setAttribute('aria-label', `Switch to ${dark ? 'light' : 'dark'} theme`);
     themeButton.title = `Turn valve for ${dark ? 'light' : 'dark'} mode`;
-    themeButton.querySelector('.valve-label').textContent = dark ? 'lights off' : 'lights on';
     document.querySelector('meta[name="theme-color"]').content = dark ? '#1b211e' : '#f8f7f3';
     palette = dark
       ? { outer: '#3a4738', inner: '#263025', highlight: '#46533f', packet: '#81996b', text: '#728169', bg: '#1b211e' }

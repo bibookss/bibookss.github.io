@@ -210,6 +210,5 @@ body { position: relative; }
 .meter { position: relative; width: 90px; height: 132px; display: flex; flex-direction: column; align-items: center; }
 .meter-value { position: absolute; top: 81px; color: var(--heading); font: 11px/15px var(--mono); font-variant-numeric: tabular-nums; }
 .meter-label { position: absolute; top: 10px; color: var(--muted); font: 9px var(--mono); white-space: nowrap; }
-#metrics-scope { display: block; font: 8px var(--mono); color: var(--muted); margin-top: 12px; }
 .site-footer { padding-bottom: 185px; }
 @media (max-width: 941px) { .site-footer { padding-bottom: 185px; } }

@@ -21,7 +21,6 @@
           meter.title = `Dial scale: 0–${scale.toLocaleString()}`;
         }
         document.dispatchEvent(new CustomEvent('metricschange', { detail: counts }));
-        document.querySelector('#metrics-scope').textContent = counts.preview ? 'local preview' : 'all visitors';
         note.textContent = counts.preview
           ? 'Preview counters · separate from the live site.'
           : 'Page loads and valve turns, across all visitors.';
