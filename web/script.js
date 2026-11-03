@@ -2,7 +2,6 @@
   const root = document.documentElement;
   const themeButton = document.querySelector('#theme-toggle');
   const flowButton = document.querySelector('#flow-toggle');
-  const flowLabel = document.querySelector('#flow-label');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const systemTheme = matchMedia('(prefers-color-scheme: dark)');
   const canvas = document.querySelector('#pipeline');
@@ -58,7 +57,6 @@
     root.dataset.flow = playing ? 'playing' : 'paused';
     flowButton.setAttribute('aria-pressed', String(playing));
     flowButton.setAttribute('aria-label', playing ? 'Pause pipeline animation' : 'Play pipeline animation');
-    flowLabel.textContent = playing ? 'pipes flowing' : 'pipes paused';
     flowButton.title = playing ? 'Turn valve to pause pipes' : 'Turn valve to play pipes';
     syncAnimation();
   }
