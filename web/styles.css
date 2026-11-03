@@ -201,3 +201,16 @@ body { position: relative; }
   .site-footer { padding-bottom: 125px; }
 }
 @media (max-width: 600px) { .page { width: calc(100% - 40px); } }
+
+.meters { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 360px; margin: 0 auto; }
+.meter { display: flex; flex-direction: column; align-items: center; }
+.meter-dial { width: 120px; height: 76px; overflow: visible; shape-rendering: crispEdges; }
+.meter-arc { stroke: var(--line); stroke-width: 4px; fill: none; }
+.meter-ticks { stroke: var(--muted); stroke-width: 2px; fill: none; }
+.meter-needle { transform-origin: 60px 60px; transition: transform .45s ease; }
+.meter-needle path { stroke: var(--accent); stroke-width: 3px; }
+.meter-hub { fill: var(--accent); }
+.meter-value { font: 22px var(--mono); color: var(--heading); font-variant-numeric: tabular-nums; margin-top: 4px; }
+.meter-label { font: 11px var(--mono); color: var(--muted); margin-top: 8px; }
+.meter-note { color: var(--muted); text-align: center; font: 10px/1.8 var(--mono); margin-top: 22px; }
+@media (prefers-reduced-motion: reduce) { .meter-needle { transition: none; } }

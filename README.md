@@ -1,30 +1,41 @@
 # Albert Perez's portfolio
 
-A quiet, text-first portfolio with animated pixel plumbing in the margins. Plain HTML, CSS, and JavaScript, with no build step or runtime dependencies.
+A text-first portfolio with pixel plumbing, theme and animation valves, and shared activity gauges.
 
-## Run locally
+## Local preview
 
-From this directory:
+Requires Node 24+.
 
 ```sh
-python3 -m http.server 4173 --directory dist
+npm install
+npm run dev
 ```
 
-Open http://localhost:4173.
+Open http://localhost:4173. Phones on the same network can use the Mac's LAN address. Local counters persist in ignored `.sites-runtime/counters.sqlite`, separate from production.
 
-## Edit
+## Source
 
-- `dist/index.html`: portfolio content, navigation, and project details.
-- `dist/styles.css`: layout, colors, responsive styling, and dark theme.
-- `dist/script.js`: canvas pipes, animation controls, and theme preferences.
-- `dist/assets/albert-perez-resume.pdf`: downloadable resume.
+- `web/index.html`: content and gauges.
+- `web/styles.css`: layout, themes, and responsive artwork.
+- `web/script.js`: canvas pipes and independent valves.
+- `web/metrics.js`: page loads and valve clicks.
+- `web/assets/`: resume PDF and favicon.
+- `worker/index.js`: embedded asset delivery and metrics API.
+- `db/schema.ts`: database schema. Run `npm run db:generate` after schema changes, and commit generated migrations.
 
-The canvas is decorative and doesn't capture pointer events. Animation respects reduced-motion preferences and stops when the tab is hidden. Theme and animation preferences are stored locally. Content, anchor navigation, project details, and the resume also work without JavaScript.
+## Counters
 
-Content is based on the supplied resume. The personal data warehouse's source URL returned 404 when checked, so the project has an inline architecture breakdown instead of an unavailable repository link. Add the repository link once it is public.
+Shared page loads (not unique visitors) and explicit theme/animation valve clicks. No visitor identity, IP address, or event history is stored. Automatic theme restoration and motion preferences don't count as valve clicks. Dials expand their ranges as counts grow; the numeric reading is exact. Failed requests display an unavailable message.
 
-## Hosting
+## Build and test
 
-Serve `dist/` with any static host. The Sites project identity lives in `.openai/hosting.json`. Update the `og:url` metadata if moving to a different domain.
+```sh
+npm run build
+npm test
+```
 
-Design reference: [Kevin Amparado's Hugo Bear portfolio](https://kevinamparado.com/). Original markup, styling, and pixel pipeline illustration.
+The production Worker embeds all assets in `dist/server/index.js`, with no runtime dependencies. Sites provisions the D1 `DB` binding from `.openai/hosting.json` and applies committed Drizzle migrations. Keep the existing Site ID and audience when publishing. `dist/` is generated and ignored.
+
+The canvas is decorative. Controls support keyboard input and reduced motion. Content, project disclosure, and resume links work without JavaScript.
+
+Resume-based content; the warehouse's unavailable source URL is replaced by inline architecture details. Design references: https://kevinamparado.com/ and https://www.nemaas.com/. Original code and pixel illustration.
