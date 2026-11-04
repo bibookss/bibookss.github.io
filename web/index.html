@@ -39,13 +39,14 @@
 
     <span id="flow-status" class="sr-only" role="status"></span>
 
+
     <div class="page" id="home">
       <main id="main">
         <section class="intro" aria-labelledby="intro-title">
           <h1 id="intro-title">hey, i'm albert<span class="accent">.</span></h1>
           <p class="intro-lead">I build the pipelines that make data useful.</p>
           <p>From a messy source to a dependable warehouse, I work on the plumbing in between: ingestion, transformation, orchestration, and getting the right data where it needs to go.</p>
-          <p>Currently a <strong>Data Engineer III at Stratpoint</strong>, working with Python, Dagster, dbt, and Amazon Redshift.</p>
+          <p>Currently a <strong>Data Engineer III at Stratpoint</strong>, building reusable pipelines with dbt and Dagster on Amazon Redshift.</p>
           <div class="intro-links">
             <a href="mailto:albperez.dev@gmail.com">say hello <span aria-hidden="true">↗</span></a>
             <span class="link-divider" aria-hidden="true">/</span>
@@ -53,6 +54,24 @@
             <span class="link-divider" aria-hidden="true">/</span>
             <a href="https://www.linkedin.com/in/albuperez/" target="_blank" rel="noopener">linkedin <span aria-hidden="true">↗</span></a>
           </div>
+        </section>
+
+        <section class="content-section experience" aria-labelledby="experience-title">
+          <div class="section-heading"><h2 id="experience-title">Where I've been</h2><a class="section-aside" href="assets/albert-perez-resume.pdf" target="_blank" rel="noopener">full resume <span aria-hidden="true">↗</span></a></div>
+          <article class="job">
+            <div class="job-heading"><h3>Stratpoint Technologies</h3><span class="job-date">Feb 2026 — now</span></div>
+            <p class="job-role">Data Engineer III</p>
+            <p>Migrated 20+ legacy fraud-detection scripts to dbt and Dagster on Redshift, mapping source data into 10+ gold-layer fraud models.</p>
+            <p>Built reusable, config-driven pipelines: 10+ ingestion workflows across bronze, silver, and gold, plus a Python and S3 delivery framework that publishes gold-layer views to APIs, databases, and JSON from YAML configs.</p>
+            <p>Parallelized I/O-bound Dagster jobs to cut pipeline runtime by <strong>57%</strong>, and added Teams success and failure alerts. Also added dynamic PII masking, reusable dbt data policies, and asset health and PII details in dbt Docs.</p>
+          </article>
+          <article class="job">
+            <div class="job-heading"><h3>Undisclosed hedge fund</h3><span class="job-date">Aug 2024 — Feb 2026</span></div>
+            <p class="job-role">Data Engineer · Singapore</p>
+            <p>Built an LLM-powered broker research pipeline that ingests reports, extracts structured data, groups it into market narratives, and generates research reports. Also built a meeting bot for Zoom, Teams, and Google Meet that captures transcripts and creates structured summaries.</p>
+            <p>Added news asset identification and sentiment analysis, increasing structured data coverage by <strong>30%</strong>, and automated executive emails for high-impact news and economic releases.</p>
+            <p>Developed and maintained <strong>50+ production pipelines</strong> across APIs, SFTP, S3, Snowflake, and alternative data sources, processing <strong>30 GB+ daily</strong>.</p>
+          </article>
         </section>
 
         <section id="work" class="content-section" aria-labelledby="work-title">
@@ -70,28 +89,9 @@
                   <li><span class="layer-number">02</span><div><strong>Silver · make it usable</strong><p>A shared dbt project handles staging and transformations, with reusable components for LLM enrichment.</p></div></li>
                   <li><span class="layer-number">03</span><div><strong>Gold · put it to work</strong><p>Curated datasets live in PostgreSQL, with pgvector support and MinIO object storage alongside it.</p></div></li>
                 </ol>
-                <p class="project-note">A personal project, built with Python, Docker Compose, and mise. Started September 2026.</p>
+                <p class="project-note">A personal project built with Dagster and dbt. Started September 2026.</p>
               </div>
             </details>
-          </article>
-        </section>
-
-        <section class="content-section experience" aria-labelledby="experience-title">
-          <div class="section-heading"><h2 id="experience-title">Where I've been</h2><a class="section-aside" href="assets/albert-perez-resume.pdf" target="_blank" rel="noopener">full resume <span aria-hidden="true">↗</span></a></div>
-          <article class="job">
-            <div class="job-heading"><h3>Stratpoint Technologies</h3><span class="job-date">Feb 2026 — now</span></div>
-            <p class="job-role">Data Engineer III</p>
-            <p>Modernizing fraud detection with dbt and Dagster, building reusable data delivery, and cutting pipeline runtime by <strong>57%</strong>.</p>
-          </article>
-          <article class="job">
-            <div class="job-heading"><h3>Undisclosed hedge fund</h3><span class="job-date">Aug 2024 — Feb 2026</span></div>
-            <p class="job-role">Data Engineer · Singapore</p>
-            <p>Maintained <strong>50+ production pipelines</strong> processing <strong>30 GB+ daily</strong>. Built LLM-powered research workflows, news analysis, and meeting automation.</p>
-          </article>
-          <article class="job">
-            <div class="job-heading"><h3>Thinking Machines Data Science</h3><span class="job-date">Jun — Aug 2024</span></div>
-            <p class="job-role">Data Engineer Intern</p>
-            <p>Built Airflow and Dagster examples to help engineers get started, and shared what I'd learned about asset-centric workflows.</p>
           </article>
         </section>
 
