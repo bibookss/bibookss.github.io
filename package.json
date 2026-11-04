@@ -6,7 +6,7 @@
     "dev": "node scripts/dev.mjs",
     "build": "node scripts/build.mjs",
     "db:generate": "drizzle-kit generate",
-    "test": "node --test scripts/metrics.test.mjs",
+    "test": "node --test scripts/*.test.mjs",
     "build:pages": "node scripts/build-pages.mjs",
     "check:pages": "node scripts/check-pages.mjs"
   },

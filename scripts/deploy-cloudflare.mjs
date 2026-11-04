@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync, appendFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
+import { ensureSubdomain } from './cloudflare-subdomain.mjs';
 
 const account = process.env.CLOUDFLARE_ACCOUNT_ID;
 const token = process.env.CLOUDFLARE_API_TOKEN;
@@ -12,17 +13,18 @@ async function api(route, options = {}) {
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
   });
   const data = await response.json();
-  if (!response.ok || !data.success) throw new Error(`Cloudflare ${route}: ${data.errors?.map(e => e.message).join('; ') || response.status}`);
+  if (!response.ok || !data.success) {
+    throw Object.assign(new Error(`Cloudflare ${route}: ${data.errors?.map(e => e.message).join('; ') || response.status}`), {
+      errors: data.errors, status: response.status,
+    });
+  }
   return data.result;
 }
 
 const databases = await api('/d1/database?name=portfolio-metrics');
 let database = databases.find(item => item.name === 'portfolio-metrics');
 if (!database) database = await api('/d1/database', { method: 'POST', body: JSON.stringify({ name: 'portfolio-metrics', primary_location_hint: 'apac' }) });
-let { subdomain } = await api('/workers/subdomain');
-if (!subdomain) {
-  ({ subdomain } = await api('/workers/subdomain', { method: 'PUT', body: JSON.stringify({ subdomain: 'bibookss-portfolio' }) }));
-}
+const subdomain = await ensureSubdomain(api, `bibookss-portfolio-${account.slice(0, 6)}`);
 const endpoint = `https://portfolio-metrics.${subdomain}.workers.dev/api/metrics`;
 mkdirSync('.sites-runtime', { recursive: true });
 const config = path.resolve('.sites-runtime/wrangler.json');
