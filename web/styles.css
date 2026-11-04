@@ -168,20 +168,10 @@ details[open] .details-sign { transform: rotate(45deg); }
 .pipe-valve.on-pipeline { position: fixed; left: auto; right: auto; transform: translate(-50%, -50%); }
 .pipe-valve.on-pipeline { top: var(--valve-y) !important; left: var(--valve-x) !important; }
 .pipe-valve.on-pipeline::before { display: none; }
-.valve-wheel { flex-shrink: 0; shape-rendering: crispEdges; transition: transform .25s ease; }
-.valve-label { position: absolute; top: 54px; white-space: nowrap; font: 9px var(--mono); color: var(--muted); }
+.valve-art { display: block; width: 54px; height: 54px; image-rendering: pixelated; }
 .pipe-valve:hover { color: var(--accent-hover); }
-[data-theme="dark"] .theme-valve .valve-wheel { transform: rotate(45deg); }
-
 @media (max-width: 941px) { .page { padding-top: 65px; } }
-@media (prefers-reduced-motion: reduce) { .valve-wheel { transition: none; } }
-
-.flow-valve { right: 112px; }
-.flow-play { display: none; }
-[data-flow="paused"] .flow-pause { display: none; }
-[data-flow="paused"] .flow-play { display: block; }
-[data-flow="paused"] .flow-valve .valve-wheel { transform: rotate(45deg); }
-
+.flow-valve { right: 112px; touch-action: manipulation; }
 
 html[data-theme="light"] #pipeline { opacity: .8; }
 @media (max-width: 800px) { html[data-theme="light"] #pipeline { opacity: .6; } }
@@ -193,7 +183,6 @@ html[data-theme="light"] #pipeline { opacity: .8; }
 }
 @media (max-width: 600px) { .page { width: calc(100% - 64px); } }
 
-[data-flow="paused"] .flow-play { transform: rotate(-45deg); transform-origin: 12px 12px; }
 
 body { position: relative; }
 @media (max-width: 941px) {

@@ -12,7 +12,6 @@
   let paths = [];
   let scenery = [];
   let palette;
-  let storedFlow;
   let siteCounts = { visits: 0, valves: 0 };
   const station = document.querySelector('#instrumentation');
   const stationContext = station.getContext('2d');
@@ -25,8 +24,25 @@
     try { localStorage.setItem(key, value); } catch { /* Preferences are optional. */ }
   }
 
-  storedFlow = readPreference('portfolio-flow');
-  let playing = !reducedMotion.matches && storedFlow !== 'paused';
+  let playing = !reducedMotion.matches;
+  const flowModes = [
+    { speed: 1, direction: 1, name: 'Forward normal' },
+    { speed: 2, direction: 1, name: 'Forward fast' },
+    { speed: .5, direction: 1, name: 'Forward slow' },
+    { speed: 1, direction: 1, name: 'Forward normal' },
+    { speed: 1, direction: -1, name: 'Backward normal' },
+    { speed: 2, direction: -1, name: 'Backward fast' },
+    { speed: .5, direction: -1, name: 'Backward slow' },
+  ];
+  let flowStep = 0;
+  let flowSpeed = 1;
+  let flowDirection = 1;
+  let pendingClick = null;
+  const valves = [themeButton, flowButton].map(button => ({
+    button,
+    canvas: button.querySelector('canvas'),
+    flow: button === flowButton,
+  }));
 
   function updateTheme() {
     const dark = root.dataset.theme === 'dark';
@@ -37,6 +53,7 @@
       ? { outer: '#3a4738', inner: '#263025', highlight: '#46533f', packet: '#81996b', text: '#728169', bg: '#1b211e' }
       : { outer: '#acb99f', inner: '#e5eadc', highlight: '#95a987', packet: '#5c7c49', text: '#718665', bg: '#f8f7f3' };
     draw();
+    drawValves();
   }
 
   themeButton.hidden = false;
@@ -55,24 +72,83 @@
 
   function updateFlow() {
     root.dataset.flow = playing ? 'playing' : 'paused';
-    flowButton.setAttribute('aria-pressed', String(playing));
-    flowButton.setAttribute('aria-label', playing ? 'Pause pipeline animation' : 'Play pipeline animation');
-    flowButton.title = playing ? 'Turn valve to pause pipes' : 'Turn valve to play pipes';
+    root.dataset.flowStep = String(flowStep);
+    root.dataset.flowSpeed = String(flowSpeed);
+    root.dataset.flowDirection = flowDirection === 1 ? 'forward' : 'reverse';
+    const mode = flowModes[flowStep];
+    const next = flowModes[(flowStep + 1) % flowModes.length];
+    flowButton.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} pipeline animation. ${mode.name} flow.`);
+    flowButton.title = `${mode.name} (${flowSpeed}×). Click to ${playing ? 'pause' : 'play'}. Double-click: ${next.name.toLowerCase()}.`;
+    drawValves();
     syncAnimation();
   }
 
   flowButton.hidden = false;
-  flowButton.addEventListener('click', () => {
-    playing = !playing;
-    storedFlow = playing ? 'playing' : 'paused';
-    savePreference('portfolio-flow', storedFlow);
+  function cycleFlow() {
+    flowStep = (flowStep + 1) % flowModes.length;
+    flowSpeed = flowModes[flowStep].speed;
+    flowDirection = flowModes[flowStep].direction;
+    playing = true;
     updateFlow();
+    document.querySelector('#flow-status').textContent = `${flowModes[flowStep].name} flow. ${flowSpeed} times speed.`;
+  }
+  flowButton.addEventListener('click', () => {
+    if (pendingClick !== null) {
+      clearTimeout(pendingClick);
+      pendingClick = null;
+      cycleFlow();
+      return;
+    }
+    pendingClick = setTimeout(() => {
+      pendingClick = null;
+      playing = !playing;
+      updateFlow();
+      document.querySelector('#flow-status').textContent = playing ? `${flowModes[flowStep].name} flow resumed.` : 'Animation paused.';
+    }, 320);
+  });
+  flowButton.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    event.preventDefault();
+    playing = !playing;
+    updateFlow();
+    document.querySelector('#flow-status').textContent = playing ? `${flowModes[flowStep].name} flow resumed.` : 'Animation paused.';
   });
 
   reducedMotion.addEventListener('change', () => {
-    playing = !reducedMotion.matches && storedFlow !== 'paused';
+    playing = !reducedMotion.matches;
     updateFlow();
   });
+
+  function drawValves() {
+    const dark = root.dataset.theme === 'dark';
+    const color = dark
+      ? { edge: '#849673', body: '#2b3527', bevel: '#627255', ink: '#b3cc9b', shadow: '#1b211e' }
+      : { edge: '#95a987', body: '#e5eadc', bevel: '#bdc9af', ink: '#4c7055', shadow: '#f8f7f3' };
+    for (const { canvas, flow } of valves) {
+      const c = canvas.getContext('2d');
+      if (!c) continue;
+      c.clearRect(0, 0, 18, 18);
+      const box = (x, y, w, h, fill) => { c.fillStyle = fill; c.fillRect(x, y, w, h); };
+      // Fixed housing on the same three-pixel grid as the pipework.
+      box(5, 7, 8, 9, color.edge); box(3, 9, 12, 5, color.edge);
+      box(6, 8, 6, 7, color.body); box(4, 10, 10, 3, color.body);
+      box(2, 8, 2, 7, color.bevel); box(14, 8, 2, 7, color.bevel);
+      const lift = flow ? (!playing ? 4 : flowSpeed === 2 ? 0 : flowSpeed === 1 ? 2 : 4) : dark ? 3 : 0;
+      box(8, 3 + lift, 2, 6 - lift, color.edge);
+      box(2, 1 + lift, 14, 3, color.edge);
+      box(3, 2 + lift, 12, 1, color.body);
+      box(flow ? (flowDirection === -1 ? 3 : 12) : dark ? 3 : 12, 1 + lift, 2, 1, color.ink);
+      box(6, 10, 6, 4, color.shadow);
+      if (flow && playing) {
+        box(6, 11, 5, 1, color.ink);
+        const head = flowDirection === -1 ? 7 : 9;
+        box(head, 10, 1, 1, color.ink); box(head, 12, 1, 1, color.ink);
+      } else if (flow) {
+        box(7, 11, 1, 2, color.ink); box(10, 11, 1, 2, color.ink);
+      } else box(8, dark ? 12 : 10, 2, 1, color.ink);
+      for (const x of [5, 12]) for (const y of [9, 13]) box(x, y, 1, 1, color.edge);
+    }
+  }
 
   function makePath(points) {
     let length = 0;
@@ -309,7 +385,7 @@
 
   function animate(timestamp) {
     animationFrame = null;
-    if (previousTime !== null) elapsed += Math.min(timestamp - previousTime, 60);
+    if (previousTime !== null) elapsed += Math.min(timestamp - previousTime, 60) * flowSpeed * flowDirection;
     previousTime = timestamp;
     draw();
     if (playing && !document.hidden && paths.length && context) animationFrame = requestAnimationFrame(animate);
@@ -328,6 +404,8 @@
   new ResizeObserver(resize).observe(document.querySelector('.page'));
   window.addEventListener('pageshow', syncAnimation);
   window.addEventListener('pagehide', () => {
+    clearTimeout(pendingClick);
+    pendingClick = null;
     if (animationFrame !== null) cancelAnimationFrame(animationFrame);
     animationFrame = null;
     previousTime = null;
