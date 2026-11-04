@@ -39,6 +39,18 @@
 
     <span id="flow-status" class="sr-only" role="status"></span>
 
+    <button id="leak-trigger" class="leak-trigger" type="button" aria-label="Loosen this pipe coupling to test the leak easter egg" hidden><canvas width="12" height="12" aria-hidden="true"></canvas></button>
+    <dialog id="leak-dialog" class="leak-dialog" aria-labelledby="leak-title">
+      <div class="leak-dialog-inner">
+        <span class="leak-dialog-icon" aria-hidden="true">!</span>
+        <h2 id="leak-title">uh oh. little leak.</h2>
+        <p>The pipeline sprung a leak. I can fix the data kind. For the plumbing kind, I know a guy.</p>
+        <div class="leak-actions">
+          <button id="repair-leak" type="button">patch it up</button>
+          <a href="mailto:albperez.dev@gmail.com?subject=I%20found%20a%20leak">report a leak <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </dialog>
 
     <div class="page" id="home">
       <main id="main">

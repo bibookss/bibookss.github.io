@@ -15,6 +15,26 @@
   let siteCounts = { visits: 0, valves: 0 };
   const station = document.querySelector('#instrumentation');
   const stationContext = station.getContext('2d');
+  const leakTrigger = document.querySelector('#leak-trigger');
+  const leakDialog = document.querySelector('#leak-dialog');
+  let leak = false;
+  let leakPoint = null;
+
+  // A little wrench sits on the coupling where visitors can break the pipe.
+  leakTrigger.hidden = false;
+  const leakIcon = leakTrigger.querySelector('canvas').getContext('2d');
+  leakIcon.fillStyle = '#4c7055';
+  [[4, 0], [6, 2], [2, 4], [4, 6], [6, 8], [8, 10], [10, 8], [8, 6], [6, 4]].forEach(([x, y]) => leakIcon.fillRect(x, y, 2, 2));
+  leakTrigger.addEventListener('click', () => {
+    leak = true;
+    leakDialog.showModal();
+    draw();
+  });
+  document.querySelector('#repair-leak').addEventListener('click', () => leakDialog.close());
+  leakDialog.addEventListener('close', () => {
+    leak = false;
+    draw();
+  });
 
   function readPreference(key) {
     try { return localStorage.getItem(key); } catch { return null; }
@@ -215,6 +235,7 @@
         { kind: 'label', x: right + 10, y: lower + 3, text: 'serve' },
         { kind: 'coupling', x: right + 27, y: lower + 43, vertical: true },
       ];
+      leakPoint = scenery.find(item => item.kind === 'coupling');
     } else {
       // On small screens the plumbing frames the document, away from the copy.
       paths = [
@@ -224,6 +245,12 @@
         { kind: 'coupling', x: 25, y: 18, vertical: false },
         { kind: 'source', x: 12, y: 2 },
       ];
+      leakPoint = scenery.find(item => item.kind === 'coupling');
+    }
+    if (leakPoint) {
+      leakTrigger.style.position = window.innerWidth < 942 ? 'absolute' : 'fixed';
+      leakTrigger.style.left = `${leakPoint.x * 3 - 18}px`;
+      leakTrigger.style.top = `${leakPoint.y * 3 - 18}px`;
     }
     updateTheme();
     syncAnimation();
@@ -295,12 +322,51 @@
       for (let packet = 0; packet < count; packet++) {
         const distance = elapsed * .012 + packet * path.length / count + index * 30;
         const [x, y] = pointOnPath(path, distance);
+        // Packets that reach the split are swept out into the leak spray.
+        if (leak && leakPoint && Math.hypot(x - leakPoint.x, y - leakPoint.y) < 4) continue;
         context.fillStyle = palette.packet;
         context.fillRect(x - 1, y - 1, 2, 2);
       }
     });
     scenery.forEach(drawScenery);
+    if (leak && leakPoint) drawLeak();
     drawStation();
+  }
+
+  function drawLeak() {
+    const { x, y } = leakPoint;
+    // Break a chunk out of the coupling so the spray clearly comes from the pipe.
+    context.fillStyle = palette.bg;
+    context.fillRect(x - 3, y - 3, 6, 6);
+    context.fillStyle = palette.packet;
+    context.fillRect(x - 2, y - 2, 4, 2);
+    context.fillRect(x + 1, y, 2, 2);
+
+    // Leak intensity follows the selected pipe speed; a paused line still drips.
+    const now = performance.now();
+    const mobile = window.innerWidth < 942;
+    const pressure = playing ? flowSpeed : 0.18;
+    const dropletCount = playing ? Math.round(22 * flowSpeed) : 3;
+    const cycle = playing ? 950 / flowSpeed : 1800;
+    const showerHeight = (mobile ? 8 : 34) * pressure;
+    const spread = (mobile ? 4 : 10) * Math.sqrt(pressure);
+    for (let index = 0; index < dropletCount; index++) {
+      const t = (now / cycle + index / dropletCount) % 1;
+      const column = (index % 9) - 4;
+      const jitter = Math.round(Math.sin(now / 95 + index * 4) * 2);
+      const px = Math.round(x + column * spread / 4 + flowDirection * t * pressure * 2 + jitter);
+      const py = Math.round(y + 3 + t * showerHeight);
+      context.fillStyle = index % 5 === 0 ? palette.highlight : palette.packet;
+      const width = pressure > 1.4 && index % 5 === 0 ? 3 : 2;
+      const height = pressure > 1.4 && index % 3 === 0 ? 4 : 2;
+      context.fillRect(px, py, width, height);
+    }
+
+    // The puddle grows with the leak; a trickle leaves just a few pixels.
+    context.fillStyle = palette.highlight;
+    const puddleY = y + showerHeight + 4;
+    const puddleWidth = Math.round(pressure * 5);
+    context.fillRect(x - puddleWidth, puddleY, puddleWidth * 2, 2);
   }
 
   function drawStation() {
@@ -385,10 +451,10 @@
 
   function animate(timestamp) {
     animationFrame = null;
-    if (previousTime !== null) elapsed += Math.min(timestamp - previousTime, 60) * flowSpeed * flowDirection;
+    if (playing && previousTime !== null) elapsed += Math.min(timestamp - previousTime, 60) * flowSpeed * flowDirection;
     previousTime = timestamp;
     draw();
-    if (playing && !document.hidden && paths.length && context) animationFrame = requestAnimationFrame(animate);
+    if ((playing || leak) && !document.hidden && paths.length && context) animationFrame = requestAnimationFrame(animate);
   }
 
   function syncAnimation() {
@@ -396,7 +462,7 @@
     animationFrame = null;
     previousTime = null;
     draw();
-    if (playing && !document.hidden && paths.length && context) animationFrame = requestAnimationFrame(animate);
+    if ((playing || leak) && !document.hidden && paths.length && context) animationFrame = requestAnimationFrame(animate);
   }
 
   document.addEventListener('visibilitychange', syncAnimation);
