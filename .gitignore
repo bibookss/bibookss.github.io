@@ -4,3 +4,9 @@ node_modules/
 *.log
 
 dist/
+
+_site/
+.wrangler/
+.env
+.env.*
+.dev.vars*

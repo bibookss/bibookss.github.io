@@ -1,10 +1,15 @@
 (() => {
   const note = document.querySelector('#metrics-note');
+  const endpoint = window.portfolioConfig?.metricsEndpoint;
+  if (!endpoint) {
+    note.textContent = 'Shared counters are awaiting configuration.';
+    return;
+  }
   let queue = Promise.resolve();
   function record(event) {
     queue = queue.then(async () => {
       try {
-        const response = await fetch('/api/metrics', {
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ event }),

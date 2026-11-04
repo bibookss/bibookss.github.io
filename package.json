@@ -6,10 +6,13 @@
     "dev": "node scripts/dev.mjs",
     "build": "node scripts/build.mjs",
     "db:generate": "drizzle-kit generate",
-    "test": "node --test scripts/metrics.test.mjs"
+    "test": "node --test scripts/metrics.test.mjs",
+    "build:pages": "node scripts/build-pages.mjs",
+    "check:pages": "node scripts/check-pages.mjs"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.11",
-    "drizzle-orm": "^0.45.4"
+    "drizzle-orm": "^0.45.4",
+    "wrangler": "^4.157.0"
   }
 }
