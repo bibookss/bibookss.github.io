@@ -24,7 +24,9 @@ async function api(route, options = {}) {
 const databases = await api('/d1/database?name=portfolio-metrics');
 let database = databases.find(item => item.name === 'portfolio-metrics');
 if (!database) database = await api('/d1/database', { method: 'POST', body: JSON.stringify({ name: 'portfolio-metrics', primary_location_hint: 'apac' }) });
+console.log('Checking workers.dev registration; new accounts may take a minute to become ready.');
 const subdomain = await ensureSubdomain(api, `bibookss-portfolio-${account.slice(0, 6)}`);
+console.log(`Using workers.dev subdomain: ${subdomain}`);
 const endpoint = `https://portfolio-metrics.${subdomain}.workers.dev/api/metrics`;
 mkdirSync('.sites-runtime', { recursive: true });
 const config = path.resolve('.sites-runtime/wrangler.json');
@@ -46,7 +48,7 @@ function run(args) {
 run(['d1', 'migrations', 'apply', 'portfolio-metrics', '--remote']);
 run(['deploy']);
 let ready = false;
-for (let attempt = 0; attempt < 8; attempt++) {
+for (let attempt = 0; attempt < 30; attempt++) {
   try {
     const response = await fetch(endpoint, { headers: { Origin: 'https://bibookss.github.io' } });
     const counts = await response.json();

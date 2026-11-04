@@ -9,11 +9,11 @@ test('creates a subdomain after Cloudflare reports the first-time missing-subdom
   });
   const api = async (route, options = {}) => {
     calls.push([route, options]);
-    if (!options.method) throw error;
+    if (!options.method && calls.length === 1) throw error;
     return { subdomain: 'portfolio-example' };
   };
-  assert.equal(await ensureSubdomain(api, 'portfolio-example'), 'portfolio-example');
-  assert.equal(calls.length, 2);
+  assert.equal(await ensureSubdomain(api, 'portfolio-example', { sleep: async () => {} }), 'portfolio-example');
+  assert.equal(calls.length, 3);
   assert.equal(calls[1][1].method, 'PUT');
   assert.deepEqual(JSON.parse(calls[1][1].body), { subdomain: 'portfolio-example' });
 });
@@ -39,4 +39,21 @@ test('propagates subdomain creation failures', async () => {
     if (options?.method === 'PUT') throw error;
     return { subdomain: null };
   }, 'taken'), error);
+});
+
+test('waits until the new subdomain can be read before allowing Wrangler to deploy', async () => {
+  const missing = Object.assign(new Error('Not registered yet'), {
+    errors: [{ message: 'You do not have a workers.dev subdomain.' }],
+  });
+  let reads = 0;
+  let writes = 0;
+  const api = async (route, options = {}) => {
+    if (options.method === 'PUT') { writes++; return { subdomain: 'new-subdomain' }; }
+    reads++;
+    if (reads < 3) throw missing;
+    return { subdomain: 'new-subdomain' };
+  };
+  assert.equal(await ensureSubdomain(api, 'new-subdomain', { sleep: async () => {} }), 'new-subdomain');
+  assert.equal(reads, 3);
+  assert.equal(writes, 1);
 });
